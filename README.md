@@ -1,2 +1,2 @@
-# hello-world
-first
+### 2/1일
+sql 집계함수 관련 todo 문제 복습, join에 대한 개념 복습 
