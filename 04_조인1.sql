@@ -573,7 +573,7 @@ select e.emp_id,
 from emp e left outer join dept d on e.dept_id = d.dept_id and d.dept_id =80; -- 주로 타겟테이블에 추가 조건을 붙인다.//이너조인은 결과가 어차피똑같다 값이 없으면 안갖고오니까
 --where d.dept_id = 80;  -- from 에서 조인 테이블을 만들고 나서 // 80이아닌 애들을 where 가 걸렀다.
 --80인 직원들만 조회된다. 하지만 예제에서는 모든 직원들의 이름 부서 아이디 까지 나오고 80 인애들은 추가로 부서명과 위치까지 나오게 해야한다.
---  where 는 from 에서  조인 테이블을 다만들고 조건에 안맞는건 다자른거고
+--  where 는 from 에서  조인 테이블(가상의 테이블)을 다만들고 조건에 안맞는건 다자른거고
 --  from  에 조건을 마저 넣었을때는 애초에 처음부터 조건에 맞는 애들을 픽하고 없는애들은 null(outer join 이니까./ inner 는 널을 안넣고 다빼버리잖아!)을 넣는다.
 -- 작동하는 순서가 from 이먼저고 where 이라는 것을 잊지 말고 생각해보면 된다.
 -- 오라클 문법 
@@ -582,9 +582,9 @@ select e.emp_id,
         e.dept_id,  --d. dept _id 일때는 80인 애들만 나오지만 e.dept_id 조건에 안 맍는거지 값은 갖고 있으니까 가 나온다. 
         d.dept_name, --d.dept_id 로 하면 80이 아닌애들은 'null' 이니까  // 소스테이블은 값이 다나오자노아 
         d.loc
-from emp e, dept d
+from emp e, dept d -- 여기는 join 할 테이블만 넣고 
 where e.dept_id = d.dept_id(+)  -- join 연산
-and    d.dept_id= 80;  -- 행에대한 조건.
+and    d.dept_id= 80;  -- 행에대한 조건 where 에 넣엇을 때랑 같은 값이 나온다.
 
 
 select e.emp_id,
@@ -592,9 +592,9 @@ select e.emp_id,
         e.dept_id,  --d. dept _id 일때는 80인 애들만 나오지만 e.dept_id 일때는 소스테이블이니까 조건에 안 맞아도 값은 갖고 있으니까 다 온다. 
         d.dept_name, --d.dept_id 로 하면 80이 아닌애들은 'null' 이니까  // 소스테이블은 값이 다나오자노아 
         d.loc
-from emp e, dept d
-where e.dept_id = d.dept_id(+)  -- join 연산
-and    d.dept_id(+)= 80;  -- 타겟에 대한 join 연산
+from emp e, dept d  -- 여기는 join 할 테이블만 넣고 
+where e.dept_id = d.dept_id(+)  -- join 연산 // 여기서 타겟 테이블에 (+) 추가 
+and    d.dept_id(+)= 80;  -- 타겟테이블 에 대한 join 연산
 
 
 
@@ -608,7 +608,7 @@ select  e.emp_id,
 from emp e left join job j on e.job_id = j.job_id 
 where emp_id in (100,110,120,130);
 
--- inner join
+-- inner join  null 값을 반환하지 않으니까 미배정 또한 없다.
 select  e.emp_id,
         e.emp_name,
         nvl(j.job_title,'미배정')
