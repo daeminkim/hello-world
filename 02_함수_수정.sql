@@ -16,11 +16,19 @@ select  rtrim('   김대민 천재   '),
         trim('   김대민 천재   ')
 from dual;
 
-select substr(123456789,2,5)
+select rtrim('  mac북에   ')z,
+        ltrim('   sql   ')z,
+        trim('   깔고 싶어   ') z
+from    dual;
+
+select substr(123456789,2,5)--substr 값/ 시작 인덱스/ 글자수  / 값에서 시작 index부터 글자 수 까지 뽑아낸다./
 from    dual;
 
 select replace('김대민 바보','바보','천재')
 from   dual;
+
+select replace('김대민 잘생김','잘생김','귀여움')
+from    dual;
 
 
 select upper('abc'),
@@ -39,10 +47,15 @@ select *
 from emp
 where length(emp_name) >7;  --글자 개수
 
-select lpad('abc',10,'+') "A",  -- 문자열이라 ' ' 넣어야한다.
-        length(lpad('abc',10)), 
+
+select * 
+from emp 
+where length(emp_name) >10;
+
+select lpad('abc',10,'+') "A",  --글자수가 10개가 되게 '+'를 채운다. 문자열이라 ' ' 넣어야한다.
+        length(lpad('abc',10)), -- 채울 문자를 주지않으면 공백으로 채운다.
         rpad('abc',10) "b",
-        rpad('123456789',3) "c"
+       rpad('123456789',3) "c"   -- 문자수가 원래의 값보다 작으면 잘라낸다.
 from dual;
 
 select substr('123456789',2,5),   -- 2번째 글자부터 5번째글자ㅁ만 픽 한다.
@@ -67,6 +80,16 @@ from emp;
 --모두 대문자, 부서(dept_name)는 모두 소문자로 출력.
 -- UPPER/LOWER
 
+select emp_id,
+        upper(emp_name),
+        salary,
+        lower(dept_name)
+from    emp;
+
+
+
+
+
 select  emp_id,
         upper(emp_name)"emp_name",
         salary,
@@ -80,12 +103,28 @@ from    emp;
 --TODO: EMP 테이블에서 직원의 이름(emp_name)이 PETER인 직원의 모든 정보를 조회하시오.
 
 
+
+select  *
+from    emp
+where  upper(emp_name)='PETER';
+
+
+
+
 select * from emp
 where upper(emp_name)='PETER';
 
 
 
 --TODO: EMP 테이블에서 업무(job)가 'Sh_Clerk' 인 직원의의  ID(emp_id), 이름(emp_name), 업무(job), 급여(salary)를 조회
+
+
+select  emp_id,
+        emp_name,
+        job,
+        salary
+from    emp 
+where   initcap(job)='Sh_Clerk';
 
 select  emp_id,
         emp_name,
@@ -96,7 +135,10 @@ where   initcap(job) = 'Sh_Clerk';
 
 
 --TODO: 직원 이름(emp_name) 의 자릿수를 15자리로 맞추고 글자수가 모자랄 경우 공백을 앞에 붙여 조회. 끝이 맞도록 조회
-select lpad(emp_name,15)"직원 이름"   -- 공백 디폴트값이고 아니면 채워넣을 문자를 넣으면됨ㅋ
+select lpad(emp_name,15)
+from emp;
+
+select lpad(emp_name,15)"직원 이름"   -- 공백 디폴트값이고// 아니면 채워넣을 문자를 넣으면됨ㅋ
 from   emp;
 
 
@@ -105,6 +147,11 @@ from   emp;
 --TODO: EMP 테이블에서 모든 직원의 이름(emp_name)과 급여(salary)를 조회.
 --(단, "급여(salary)" 열을 길이가 7인 문자열로 만들고, 길이가 7이 안될 경우 왼쪽부터 빈 칸을 
 -- '_'로 채우시오. EX) ______5000) -LPAD() 이용
+
+select  emp_name,
+        lpad(salary,7,'_')
+from    emp;
+
 select  emp_name,
         lpad(salary,7,'_') "급여",
         rpad(salary,7,'_')
@@ -122,6 +169,14 @@ from    emp;
 --to_char(salary, 'fm$999,999.00')"salary"
 
 -- TODO: EMP 테이블에서 이름(emp_name)이 10글자 이상인 직원들의 이름(emp_name)과 이름의 글자수 조회select *
+
+select  emp_name 이름,
+        length(emp_name) 글자수
+from    emp
+where   length(emp_name)>=10;
+
+
+
 select  emp_name,
         length(emp_name)"이름 글자수"
 from emp
@@ -147,7 +202,7 @@ where length(emp_name) >10;
  
 ************************************* */
 select  round(124.234,1),
-        trunc(567.654,0),
+        trunc(567.654,-2),-- 소수점 자리수가 없다는 뜻 정수만 갖고온다. -1부터는 1의자리수 를 나ㅏ낸다. -2를 하면 500 이된다.
         ceil (8765.560),
         floor(9876.3456)
 from    dual;
@@ -179,6 +234,12 @@ select mod(10,3) from dual;   -- 10을 3을로  나눴을대 나머지
 --조회하는 질의를 작성하시오.
 --(단, 15% 인상된 급여는 올림해서 정수로 표시하고, 별칭을 "SAL_RAISE"로 지정.)
 
+select  emp_id,
+        emp_name,
+        salary,
+        ceil(salary*1.15) "SAL_RAISE"
+from    emp;
+        
 select emp_id,
         emp_name,
         salary,
@@ -188,6 +249,16 @@ from    emp;
     
 --TODO: 위의 SQL문에서 인상 급여(sal_raise)와 급여(salary) 간의 차액을 추가로 조회 
 --(직원ID(emp_id), 이름(emp_name), 15% 인상급여, 인상된 급여와 기존 급여(salary)와 차액)
+
+select  emp_id,
+        emp_name,
+        ceil(salary*1.15)-salary"차액"
+from    emp;
+
+
+
+
+
 
 
 select emp_id,
@@ -201,6 +272,17 @@ from    emp;
 -- TODO: EMP 테이블에서 커미션이 있는 직원들의 직원_ID(emp_id), 이름(emp_name), 커미션비율(comm_pct),
 -- 커미션비율(comm_pct)을 8% 인상한 결과를 조회.
 --(단 커미션을 8% 인상한 결과는 소숫점 이하 2자리에서 반올림하고 별칭은 comm_raise로 지정)
+
+select  emp_id,
+        emp_name,
+        comm_pct,
+        round(comm_pct*1.08,2)"comm_rise"
+from    emp
+where   comm_pct is not null;
+
+
+
+
 
 select  emp_id,
         emp_name,
@@ -225,30 +307,34 @@ select sysdate,
        to_char(sysdate, 'yyyy/mm/dd hh24:mi:ss')
 from dual;  -- 실행한 날 // 매개 변수가 없으면 괄호 없음 // 함수임!!
 
-select sysdate +10,
-        sysdate-10
+select to_char(sysdate, 'yyyy/mm/dd hh24:mi:ss')
 from dual;
 
-select  months_between('2020/08/15','2019/08/15'),
-        ceil(months_between('2021/03/20','2020/04/29'))
+select sysdate +10,  -- 현재 10일후
+        sysdate-10  -- 10일 전
+from dual;
+
+select  months_between('2020/08/15','2019/08/15'),  --months_between(d1,d2) d1,d2사이에 개월 수 계산
+        months_between('2021/03/20','2020/04/29'),   -- 사이의 개울 수를 계산했는데 딱떨어지지 않을경우
+        ceil(months_between('2021/03/20','2020/04/29')) --ceil 을 해서 해결 어차피 개월수는 지난거지
 from dual;
 
 
 
 
 select  months_between(sysdate, '2020/12/28')||'개월',
-        months_between(sysdate, '2019/10/28')||'개월',   -- 앞에가 최근 날짜 
+        months_between(sysdate, '2019/10/28')||'개월',   -- 앞에 최근 날짜를 써줘야함 
         ceil(months_between(sysdate, '2020/12/26'))||'개월'  -- ceil 을 써서 소수점으로 나오는 것을 올림으로 처리 했다.
 from dual;
 
-select add_months(sysdate,2)"2개월 후",
+select add_months(sysdate,2)"2개월 후",  -- sysdate에 그냥 숫자를 더하면 날짜를 더하고 빼지만 add_months 를 월을 더한다.
         add_months(sysdate,-2)"2개월 전",-- sysdate 현재 부터 2개월 전 , 후
         add_months('2021/01/31',1)     -- 2월은 31일이 없어서  그달의 마지막 날이 나온다 계산 되는게 아니라
 from    dual;
         
 select  add_months('2030/02/23',2),
         add_months('2021/07/31',-2),
-        next_day('2021/01/28','수요일')
+        next_day('2021/01/28','수요일')  -- 해당 날짜 다음에 바로오는 수요일의 날짜를 찾아준다.
 from    dual;
  
         
@@ -281,8 +367,19 @@ where extract (month from hire_date)= 11;  -- 11월에 입사한사람  hire_date 로부�
 
 
 
+
 --TODO: EMP 테이블에서 부서이름(dept_name)이 'IT'인 직원들의 '입사일(hire_date)로 부터 
 --10일전', 입사일과 '입사일로 부터 10일후', 의 날짜를 조회. 
+
+select  hire_date-10 "10일전",
+        hire_date,
+        hire_date+10 "10일후"
+from    emp
+where   dept_name = 'IT';
+
+
+
+
 select  hire_date-10,
         hire_date,
         hire_date+10
@@ -290,6 +387,12 @@ from    emp
 where   dept_name = 'IT';
 
 --TODO: 부서가 'Purchasing' 인 직원의 이름(emp_name), 입사 6개월전과 입사일(hire_date), 6개월후 날짜를 조회.
+select  emp_name,
+        add_months(hire_date,+6),
+        hire_date,
+        add_months(hire_date,-6)
+from    emp;
+
 select emp_name,
        add_months(hire_date,-6) "6개월 전",
        hire_date"입사일",
@@ -300,6 +403,16 @@ where  dept_name = 'Purchasing';
      
 
 --TODO: EMP 테이블에서 입사일과 입사일 2달 후, 입사일 2달 전 날짜를 조회.
+select  emp_name,
+        hire_date,
+        add_months(hire_date,-2) "2달전",
+        add_months(hire_date,+2) "2달후"
+from    emp;
+
+
+
+
+
 select emp_name,
        add_months(hire_date,-2) "2개월 전",
        hire_date"입사일",
@@ -310,11 +423,26 @@ from   emp;
 --(단 근무 개월수가 실수 일 경우 정수로 반올림. 근무개월수 내림차순으로 정렬.)
 
 select  emp_name,
+        round(months_between(sysdate,hire_date))||'개월' "근무 개월"
+from    emp
+order by 2 desc;
+
+
+
+
+select  emp_name,
         round(months_between(sysdate,hire_date))||'개월' "근무 개월수"
 from    emp
 order by 2 desc;
 --order by "근무 개월수" desc;
 --TODO: 직원 ID(emp_id)가 100 인 직원의 입사일 이후 첫번째 금요일의 날짜를 구하시오.
+select next_day(hire_date,'금요일')
+from    emp;
+
+
+
+
+
 select  emp_id,
         next_day(hire_date,'금요일')
 from emp
@@ -361,27 +489,33 @@ to_date() : 문자형을 날짜형으로 변환
 -- 숫자 문자 // 문자 날짜// 끼리는 가능하지만 
 -- 숫자 날짜 사이는 불가능 하다.
 
-select 20+to_number('10,000','99,999') from dual;
+select 20+to_number('10,000','99,999') from dual; --to_number('값(문자)','형식(이런형식이다 라는걸 알려야함)')-->형식에 맞게 숫자로 바꿔야 한다는 것을
+                                                    -- 알려주고 바꾸게 함
 
-
+select 100+to_number('100,000','999,999')from dual;
 
 select 10+to_number('1,000', '9,999') from dual;
-select to_char(100000000, '999,999,999') from dual;
 
-select to_char(salary, 'fm9,999,999.00')
-from emp;
 
-select to_char(salary, '9,999,999.99')
+select to_char(100000000, '999,999,999') 금액 from dual;
+select to_char(100000000, '999,999,999,999') 금액 from dual;  -- 남는 자리수 앞부분을 공백으로 채웟다.
+select to_char(100000000, '000,000,000,000') 금액 from dual;  -- 남는 자리수를 0 으로 채웟다.
+ 
+
+select to_char(salary, 'fm9,999,999.00')금액  -- 결과를 보면 공백으로 채워졌어야하는데 fm 때문에 공백이 사라짐 /
+from emp;                                       -- 그리고 실수부분은 0,9 둘다 0으로 채운다.
+
+select to_char(salary, '9,999,999.99') 금액
 from emp;
 
 select 10+to_number('1,000.53', '9,999.99')
 from dual;
 
-select  to_char(12345678, '999,999,999'),
-        to_char(12345678, 'fm999,999,999'),
-        to_char(12345678, '999,999'),
-        to_char(10000, '$99,999'),
-        to_char(10000, 'L99,999')
+select  to_char(12345678, '999,999,999')금액,  -- 바꿔야 되는 자리수 보다 형식으로 주어진자리수가 커서 앞에 공백으로 채웠다. 
+        to_char(12345678, 'fm999,999,999')금,  -- fm 때문에 같은 값이지만 공백이없다.
+        to_char(12345678, '999,999')금,        -- 문자열로 바꿔야하는 것보다 자리수가 적어서 결과값이 깨졌다.
+        to_char(10000, '$99,999')금,         --  $ 표시 붙였고 L 은 로컬 통화 단위를 붙여준다.
+        to_char(10000, 'L99,999')금
 from dual;
 
 
@@ -393,15 +527,25 @@ select to_char(1234.567,'0,000.000'),
         to_char(1234.56, '999,999.999')  -- 실수부는 둘다 0으로 표현 
 from dual;
 
-select to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss'),
-        to_char(sysdate, 'yyyy'),
-        to_char(sysdate, 'day'),
-        to_char(sysdate, 'dy'),
-        to_char(sysdate, 'hh24:mi:ss'),
+select to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss')"현재 시간 년월일",
+        to_char(sysdate, 'yyyy')년도만,
+        to_char(sysdate, 'day')날만,
+        to_char(sysdate, 'dy')단축,
+        to_char(sysdate, 'hh24:mi:ss')시간만,
         to_char(sysdate, 'yyyy"년"mm"월"dd"일"')
     
 from dual;
 
+
+
+
+
+
+select  to_char(sysdate,'yyyy/mm/dd hh24"시"mi"분"ss"초"'),
+        to_char(sysdate,'yyyy"년도" mm"월" dd"일"'),
+        to_char(sysdate, 'yyyy'),
+        extract(year from sysdate)
+from dual;
 
 select to_date('2000/10', 'yyyy/mm')from dual;
 
@@ -428,6 +572,15 @@ from dual;
 -- TODO: 부서명(dept_name)이 'Finance'인 직원들의 ID(emp_id), 이름(emp_name)과 입사년도(hire_date) 4자리만 출력하시오. 
 --(ex: 2004);  /// 이거 설명 잘듣기 !!
 --to_char()
+
+select  emp_id,
+        emp_name,
+        to_char(hire_date,'yyyy')
+from    emp
+where   dept_name = 'Finance';
+
+
+
 select  emp_id,
         emp_name,
         extract(year from hire_date)
@@ -445,6 +598,15 @@ where dept_name = 'Finance';
 
 
 --TODO: 직원들중 11월에 입사한 직원들의 직원ID(emp_id), 이름(emp_name), 입사일(hire_date)을 조회
+
+select  emp_id,
+        emp_name,
+        hire_date
+from    emp
+--where   to_char(hire_date,'mm')=11;
+where   extract(month from hire_date)=11;
+
+
 --to_char()
 select emp_id,
         emp_name,
@@ -456,6 +618,17 @@ where extract (month from hire_date)= 11;
 --TODO: 2006년에 입사한 모든 직원의 이름(emp_name)과 입사일(yyyy-mm-dd 형식)을 입사일(hire_date)의 오름차순으로 조회
 --to_char()
 
+
+select  emp_name,
+        to_char(hire_date, 'yyyy-mm-dd')
+from    emp
+where   to_char(hire_date, 'yyyy')= 2006
+order by hire_date;
+
+
+
+
+
 select emp_name,
        to_char(hire_date,'yyyy-mm-dd')
 from    emp
@@ -465,6 +638,17 @@ where to_char(hire_date, 'YYYY') ='2006';
 
 
 --TODO: 2004년 05월 이후 입사한 직원 조회의 이름(emp_name)과 입사일(hire_date) 조회
+select  emp_name,
+        hire_date
+from    emp
+where   to_char(hire_date,'yyyymm') >200405
+order by 2;
+
+
+
+
+
+
 select emp_name,
         hire_date
 from emp
@@ -476,6 +660,17 @@ order by 2;
 
 
 --TODO: 문자열 '20100107232215' 를 2010년 01월 07일 23시 22분 15초 로 출력. (dual 테입블 사용)
+
+select to_date('20100107232215','yyyymmddhh24miss')
+from dual;  -->2010/01/07  결과
+
+
+select to_char(to_date('20100107232215','yyyymmddhh24miss'),'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초"')
+from dual;  -->2010년 01월 07일 23시 22분 15초 결과 
+    --- 문자열을 date 타입으로 바꿔서 년도와 월 일 을 알려주고 , 다시 데이트 타입을 문자타입으로 바꾼다. 문자 타입을 문자타입으로 바꿀 수 없기 때문이다.
+
+
+
 select to_char(to_date('20100107232215', 'yyyymmddhh24miss'),'yyyy"년" mm"월 "dd"일 "hh24"시 "mi"분 "ss"초"')
 from dual;
 
@@ -487,7 +682,7 @@ from dual;
 
 /* *************************************
 함수 - null 관련 함수 
-NVL(expr) : expr 값이 null이면 기본값을 null이 아니면 exper 값을 반환
+NVL(expr,기본값) : expr 값이 null이면 기본값을 null이 아니면 exper 값을 반환
 NVL2(expr, nn, null) - expr이 null이 아니면 nn, 널이면 세번째 반환
 nullif(ex1, ex2) 둘이 같으면 null, 다르면 ex1
 
@@ -508,17 +703,39 @@ from dual;
 
 -- EMP 테이블에서 직원 ID(emp_id), 이름(emp_name), 급여(salary), 커미션비율(comm_pct)을 조회. 
 --단 커미션비율이 NULL인 직원은 0이 출력되도록 한다..
+select  emp_id,
+        emp_name,
+        salary,
+        nvl(comm_pct,0),
+        nvl2(comm_pct,'커미션있음','커미션없음'),
+       
+from    emp;
+
+
 select emp_id,
         emp_name,
         salary,
-        nvl(comm_pct, 0) comm_pct,  --커미션이 null이면 기본값 '0'을 반환// null이아니면 comm_pct 값을 반환
-        nvl2(comm_pct, '커미션 있음','커미션없음')  -- 커미션 유무 여부만 
+        nvl(comm_pct, 0) "커미션 유무",  --커미션이 null이면 기본값 '0'을 반환// null이아니면 comm_pct 값을 반환
+        nvl2(comm_pct, '커미션 있음','커미션없음')"커미션 유무",  -- 커미션 유무 여부만 
+        salary*nvl(comm_pct,0)
 from emp;
 
 
 
 --TODO: EMP 테이블에서 직원의 ID(emp_id), 이름(emp_name), 업무(job), 부서(dept_name)을 조회. 
 --부서가 없는 경우 '부서미배치'를 출력.
+
+select  emp_id,
+        emp_name,
+        job,
+        nvl(dept_name,'부서미배치')
+from    emp
+order by 4;
+
+
+
+
+
 select  emp_id,
         emp_name,
         job,
@@ -527,6 +744,16 @@ from    emp;
 
 --TODO: EMP 테이블에서 직원의 ID(emp_id), 이름(emp_name), 급여(salary), 커미션 (salary * comm_pct)을 조회. 
 --커미션이 없는 직원은 0이 조회되록 한다.
+
+
+
+select  emp_name,
+        emp_id,
+        salary,
+        nvl(salary*comm_pct,0),
+        nvl2(salary*comm_pct,'커미션 있음','커미션 없음')"커미션 유무"
+from    emp;
+
 
 select emp_id,
         salary,
@@ -569,6 +796,23 @@ select  decode(dept_name, 'Shipping','배송',
 from    emp
 order by dept_name desc;
 
+select decode(dept_name,  'Shipping','배송',
+                          'Sales','영업',
+                          'Purchasing','구매',
+                          'Marketing','mk',
+                          null,'부서 없음',
+                          dept_name)dept,
+        dept_name
+from emp
+order by dept_name desc;
+
+
+select  dept_name, case dept_name when 'Shipping' then '배송'
+                                when 'Sales'    then '영업'
+                                else nvl(dept_name,'부서없음')end "dept"
+                                
+from  emp;
+                            
 
 select dept_name,
         case dept_name  when 'Shipping' then '배송'
@@ -579,12 +823,30 @@ from emp
 order by 1 desc;
 
 
-select case when dept_name is null then '미배정' 
+select dept_name real ,
+
+            case when dept_name is null then '미배정' 
             else dept_name end dept_name
 from emp
 order by 1 desc;
 
+select case when dept_name is null then '미배정'
+            else dept_name end dept_name
+from   emp;
+
 --EMP테이블에서 급여와 급여의 등급을 조회하는데 급여 등급은 10000이상이면 '1등급', 10000미만이면 '2등급' 으로 나오도록 조회
+
+select  salary,
+        case when salary >=10000 then '1등급'
+                    else '2등급' end
+                    
+from    emp;
+
+
+
+
+
+
 
 select  salary,
         case when salary >= 10000 then '1등급'   -- 동등비교가 아니니까 case
@@ -597,13 +859,22 @@ order by 2;
 -- 직원들의 모든 정보를 조회한다. 단 정렬은 업무(job)가 'ST_CLERK', 'IT_PROG', 'PU_CLERK', 'SA_MAN' 순서대로 먼저나오도록 한다. 
 --(나머지 JOB은 상관없음)
 
-select *
-FROM emp
-order by decode(job, 'ST_CLERK', '1', 
+select * from emp
+order by decode (job, 'ST_CLERK', '1', 
                    'IT_PROG','2',
                    'PU-CLERK','3',
                    'SA_MAN','4',
-                    JOB) ;
+                   job);
+
+
+
+select *
+FROM emp
+order by decode(job, 'ST_CLERK', '1', 
+                     'IT_PROG','2',
+                     'PU-CLERK','3',
+                     'SA_MAN','4',
+                      JOB) ;
                     
 select *
 from emp
@@ -616,24 +887,84 @@ order by case job when 'ST_CLERK' then '1'
 --TODO: EMP 테이블에서 업무(job)이 'AD_PRES'거나 'FI_ACCOUNT'거나 'PU_CLERK'인 직원들의 ID(emp_id), 이름(emp_name), 
 --업무(job)을 조회. 
 -- 업무(job)가 'AD_PRES'는 '대표', 'FI_ACCOUNT'는 '회계', 'PU_CLERK'의 경우 '구매'가 출력되도록 조회
+
 select  emp_id,
         emp_name,
         case job when 'AD_PRES' then '대표'
                  when 'FI_ACCOUNT' then '회계'
-                 when  'PU_CLERK'  then '구매'
+                 when 'PU_CLERK'   then '구매'
+                 else job end job
+from    emp
+where   job in ('AD_PRES','FI_ACCOUNT','PU_CLERK');
+
+
+select  emp_id,
+        emp_name,
+        decode(job ,'AD_PRES' ,'대표',
+                   'FI_ACCOUNT','회계',
+                   'PU_CLERK','구매',
+                    job)   ---- decode 는 무조건 , 로 구분을 하고 else 나 end 를 써줄 필요없이 그냥 마지막에 else 를 써주면 된다.
+from    emp
+where   job in ('AD_PRES','FI_ACCOUNT','PU_CLERK');
+
+
+
+
+
+select  emp_id,
+        emp_name,
+        case job when 'AD_PRES' then '대표'
+                 when 'FI_ACCOUNT' then '회계'
+                 when  'FI_ACCOUNT'  then '구매'
                  else job end "job"
 from    emp
 order by 3 desc;
+
+select  emp_id,
+        emp_name,
+        decode(job, 'AD_PRES', '대표',
+                    'FI_ACCOUNT', '회계',
+                    'FI_ACCOUNT', '구매')"job",
+        case job when 'AD_PRES' then '대표'
+                 when 'FI_ACCOUNT' then '회계'
+                 when  'FI_ACCOUNT'  then '구매'
+                 else job end "job2"
+from emp
+where job in ('AD_PRES','FI_ACCOUNT','FI_ACCOUNT');
+
+
 --TODO: EMP 테이블에서 부서이름(dept_name)과 급여 인상분을 조회. 급여 인상분은 부서이름이 'IT' 이면 급여(salary)에 10%를 
 --'Shipping' 이면 급여(salary)의 20%를 'Finance'이면 30%를 나머지는 0을 출력
 -- decode 와 case문을 이용해 조회
 
 select  dept_name,
+        case when dept_name ='IT' then salary*0.1
+             when dept_name = 'Shipping' then salary*0.2
+             when dept_name = 'Finance' then salary*0.3
+             else salary*0 end "급여 인상분",   -- 조건이 들어가나 값이 들어가냐에 따라 달라진다. // 이거는 case 조건문
+        case dept_name when 'IT' then salary*0.1  -- 
+                      when 'Shipping' then salary*0.2
+                      when 'Finance'  then salary*0.3
+                      else  salary*0 end "인상"
+from    emp;
+
+
+select  dept_name,
         salary "급여",
-        case when dept_name = 'IT' then salary*0.10
+        case when dept_name = 'IT' then salary*0.10         -- 동등비교가 아니고 // 바로 조건을 넣어서 
              when dept_name = 'Shipping' then salary*0.20
              when dept_name = 'Finance' then salary*0.30
-             else salary*0 end "급여인상분"
+             else salary*0 end "급여인상분",
+             
+        decode (dept_name, 'IT', '인상안함',       -- decode 는 첫번째 컬럼의 타입과 같은 타입으로 맞춰진다.
+                            'Shipping',salary*1.2,   -- 컬럼의 처음값에 숫자를 넣어도 문자열로 바꿔준다./ 
+                            'Finance',salary*1.3,    --첫번째 컬럼의 타입을 기준으로 맞춰진다.
+                            0)"인상된급여",
+                            
+        case  dept_name when'IT' then salary*0.10
+                        when 'Shipping' then salary*0.20
+                        when 'Finance' then salary*0.30
+                        else salary*0 end "급여인상분2"   -- csse 문 then은 then 끼리 즉, 한컬럼의 값은 다같은 타입이여야 한다.!!
               
 from    emp;
 
@@ -647,7 +978,13 @@ select  emp_id,
         case when salary < 5000 then salary*1.3
              when salary >=5000 then salary*1.2
              when salary < 10000 then salary*1.2
-             else salary * 1.1 end "인상된 급여"
+             else salary * 1.1 end  "급여별 인상률",
+             
+       case when salary < 5000 then salary*1.3
+            when salary >= 10000 then salary*1.2
+            else salary * 1.2 end "급여별 인상률2"
+             -- where 절에 쓰는 연산자 다쓸 수 있다.. between , like , 등등 ~~!
+             
 from emp;
              
 
